@@ -6,6 +6,7 @@ import { FaUserAstronaut } from "react-icons/fa";
 import { HiOutlineLogout } from "react-icons/hi";
 import authService from "../services/auth.service";
 import { clearUser } from "../store/slices/authSlice";
+import AuthModal from "./AuthModal";
 
 const Navbar: React.FC = () => {
   const { user } = useSelector((state: any) => state.auth);
@@ -13,13 +14,35 @@ const Navbar: React.FC = () => {
 
   const [showCreditPopup, setShowCreditPopup] = useState<boolean>(false);
   const [showUserPopup, setShowUserPopup] = useState<boolean>(false);
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
 
   const handleLogout = async () => {
     const logoutResponse = await authService.signOut();
     if (logoutResponse) {
       dispatch(clearUser());
       setShowUserPopup(false);
+      setShowCreditPopup(false);
     }
+  };
+
+  const handleCreditClick = () => {
+    if(!user){
+      setShowAuthModal(true);
+      return;
+    }
+    setShowCreditPopup(!showCreditPopup);
+    setShowUserPopup(false);
+  };
+
+  const handleUserClick = () => {
+    setShowUserPopup(!showUserPopup);
+    setShowCreditPopup(false);
+  };
+
+  const handleAuthClick = () => {
+    setShowAuthModal(!showAuthModal);
+    setShowUserPopup(false);
+    setShowCreditPopup(false);
   };
 
   return (
@@ -39,7 +62,7 @@ const Navbar: React.FC = () => {
         <div className="flex items-center gap-6 relative">
           <div className="relative">
             <button
-              onClick={() => setShowCreditPopup(!showCreditPopup)}
+              onClick={handleCreditClick}
               className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full text-md hover:bg-gray-200 transition"
             >
               <BsCoin size={20} />
@@ -58,7 +81,7 @@ const Navbar: React.FC = () => {
           </div>
           <div className="relative">
             <button
-              onClick={() => setShowUserPopup(!showUserPopup)}
+              onClick={handleUserClick}
               className="w-9 h-9 bg-black text-white rounded-full flex items-center justify-center font-semibold"
             >
               {user ? (
@@ -87,6 +110,7 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       </motion.div>
+      {showAuthModal && <AuthModal onClose={handleAuthClick} />}
     </div>
   );
 };
