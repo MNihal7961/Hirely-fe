@@ -8,6 +8,7 @@ const App: React.FC = () => {
     <Routes>
       <Route index path={"/"} element={<Home />} />
       <Route path={"/auth"} element={<Auth />} />
+      
     </Routes>
   );
 };
