@@ -10,7 +10,11 @@ import { useAppDispatch } from "../store/hooks";
 import { setUser } from "../store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 
-const Auth: React.FC = () => {
+interface AuthProps {
+  isModel?: boolean;
+  onclose?: () => void;
+}
+const Auth: React.FC<AuthProps> = ({ isModel = false, onclose }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -18,11 +22,18 @@ const Auth: React.FC = () => {
     try {
       const response = await signInWithPopup(auth, provider);
       const { displayName, email } = response.user;
-      const authResponse = await authService.signInWithGoogle(email!, displayName!);
-      if(authResponse){
+      const authResponse = await authService.signInWithGoogle(
+        email!,
+        displayName!,
+      );
+      if (authResponse) {
         dispatch(setUser(authResponse?.user));
-        navigate("/");
-      }else{
+       if(isModel){
+        onclose?.();
+       }else{
+         navigate("/");
+       }
+      } else {
         console.error("Google authentication failed: No response from server");
       }
     } catch (error) {
@@ -31,12 +42,14 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#f3f3f3] flex items-center justify-center px-6 py-20">
+    <div
+      className={`w-full ${isModel ? "py-4" : "min-h-screen bg-[#f3f3f3] flex items-center justify-center px-6 py-20"}`}
+    >
       <motion.div
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.05 }}
-        className="w-full max-w-md p-8 rounded-3xl bg-white shadow-2xl border border-gray-200"
+        className={`w-full  ${isModel ? "max-w-md p-8 rounded-3xl" : "max-w-lg p-12 rounded-4xl"} bg-white shadow-2xl border border-gray-200`}
       >
         <div className="flex items-center justify-center gap-3 mb-6">
           <div className="bg-black text-white p-2 rounded-lg">
