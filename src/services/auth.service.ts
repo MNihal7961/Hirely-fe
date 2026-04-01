@@ -1,7 +1,8 @@
+import type { User } from "../types";
 import apiClient from "./apiClient";
 
 class AuthService {
-  async signInWithGoogle(email: string, name: string) {
+  async signInWithGoogle(email: string, name: string): Promise<User | null> {
     try {
       const response = await apiClient.post("/auth/google", { email, name });
       return response.data;
