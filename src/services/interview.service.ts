@@ -41,6 +41,38 @@ class InterviewService {
       return null;
     }
   }
+
+  async submitAnswer(
+    interviewId: string,
+    questionIndex: number,
+    answer: string,
+    timeTaken: number,
+  ) {
+    try {
+      const response = await apiClient.post("/interview/answer", {
+        interviewId,
+        questionIndex,
+        answer,
+        timeTaken,
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error("🚀 ~ InterviewService ~ submitAnswer ~ error:", error);
+      return null;
+    }
+  }
+
+  async finishInterview(interviewId: string) {
+    try {
+      const response = await apiClient.post("/interview/finish", {
+        interviewId,
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error("🚀 ~ InterviewService ~ finishInterview ~ error:", error);
+      return null;
+    }
+  }
 }
 
 const interviewService = new InterviewService();
