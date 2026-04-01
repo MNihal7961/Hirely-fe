@@ -1,7 +1,8 @@
+import type { AnalyzedResume } from "../types";
 import apiClient from "./apiClient";
 
 class InterviewService {
-  async analyzeResume(file: File): Promise<any> {
+  async analyzeResume(file: File): Promise<AnalyzedResume | null> {
     try {
       const formData = new FormData();
       formData.append("resume", file);
@@ -17,7 +18,7 @@ class InterviewService {
       return response.data;
     } catch (error: any) {
       console.error("Error analyzing resume:", error);
-      throw new Error(error.message || "Failed to analyze resume");
+      return null;
     }
   }
 }
