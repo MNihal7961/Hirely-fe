@@ -55,6 +55,25 @@ const InterviewSetup: React.FC<InterviewSetupProps> = ({
     }
     setAnalyzing(false);
   };
+
+  const handleStartInterview = async () => {
+    if (!parsedResume) {
+      return;
+    }
+    setLoading(true);
+    const startResponse = await interviewService.startInterview(
+      parsedResume.role,
+      parsedResume.experience,
+      mode,
+      parsedResume.resumeText,
+      parsedResume.projects,
+      parsedResume.skills,
+    );
+    if (startResponse) {
+      onStartInterview(startResponse);
+    }
+    setLoading(false);
+  };
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -225,10 +244,11 @@ const InterviewSetup: React.FC<InterviewSetupProps> = ({
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.95 }}
-              disabled={!parsedResume}
+              disabled={!parsedResume || loading}
+              onClick={handleStartInterview}
               className="cursor-pointer disabled:cursor-not-allowed w-full disabled:bg-gray-600 bg-green-600 hover:bg-green-700 text-white py-3 rounded-3xl text-lg font-semibold shadow-md transition duration-300"
             >
-              Start Interview
+              {loading ? "Starting..." : " Start Interview"}
             </motion.button>
           </div>
         </motion.div>
